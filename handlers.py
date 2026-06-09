@@ -109,8 +109,6 @@ ADMIN_IDS = [int(x) for x in os.getenv("ADMIN_IDS", "").split(",")]
 def is_admin(user_id: int):
     return user_id in ADMIN_IDS
 
-def is_admin(user_id: int):
-    return user_id == ADMIN_IDS
 @user.message(Command("admin"))
 async def admin_panel(message: Message):
     if message.from_user.id != ADMIN_IDS:
