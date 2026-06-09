@@ -5,6 +5,7 @@ import keyboards as kb
 import pytz
 
 kyiv = pytz.timezone("Europe/Kiev")
+scheduler = AsyncIOScheduler(timezone="Europe/Kiev")
 
 async def send_afternoon_reminders(bot):
     now = datetime.now(kyiv)
