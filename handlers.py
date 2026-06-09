@@ -115,6 +115,7 @@ def is_admin(user_id: int):
 
 @user.message(Command("admin"))
 async def admin_panel(message: Message):
+
     if not is_admin(message.from_user.id):
         await message.answer("❌ Немає доступу")
         return
