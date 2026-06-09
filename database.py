@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS bookings (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER,
+    user_id BIGINT,
     service TEXT,
     master TEXT,
     date TEXT,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS bookings (
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS reviews (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER,
+    user_id BIGINT,
     booking_id INTEGER,
     rating INTEGER,
     review_text TEXT
