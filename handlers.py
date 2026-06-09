@@ -104,14 +104,18 @@ masters_dict = {
 }
 
 # ADMIN_ID = 6484982821
-ADMIN_IDS = [int(x) for x in os.getenv("ADMIN_IDS", "").split(",")]
+ADMIN_IDS = [
+    int(x.strip())
+    for x in os.getenv("ADMIN_IDS", "").split(",")
+    if x.strip()
+]
 
 def is_admin(user_id: int):
     return user_id in ADMIN_IDS
 
 @user.message(Command("admin"))
 async def admin_panel(message: Message):
-    if message.from_user.id != ADMIN_IDS:
+    if not is_admin(message.from_user.id):
         await message.answer("❌ Немає доступу")
         return
 
