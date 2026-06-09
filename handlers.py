@@ -315,6 +315,33 @@ async def admin_delete_callback(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer("Введіть ID запису для видалення:")
     await callback.answer()
 
+@user.callback_query(lambda c: c.data == "admin_delete")
+async def admin_delete_callback(callback: CallbackQuery, state: FSMContext):
+    if not is_admin(callback.from_user.id):
+        await callback.answer("❌ Немає доступу", show_alert=True)
+        return
+    await state.set_state(AdminAction.waiting_for_delete_id)
+    await callback.message.answer("Введіть ID запису для видалення:")
+    await callback.answer()
+
+# ← одразу після додай це:
+@user.message(AdminAction.waiting_for_delete_id)
+async def process_delete_booking(message: Message, state: FSMContext):
+    text = message.text.strip()
+    if not text.isdigit():
+        await message.answer("❌ Введіть числовий ID запису")
+        return
+    booking_id = int(text)
+    cursor.execute("SELECT * FROM bookings WHERE id = %s", (booking_id,))
+    if not cursor.fetchone():
+        await message.answer("❌ Запис з таким ID не знайдено")
+        await state.clear()
+        return
+    cursor.execute("DELETE FROM bookings WHERE id = %s", (booking_id,))
+    conn.commit()
+    await message.answer(f"🗑 Запис #{booking_id} видалено", reply_markup=kb.admin_kb)
+    await state.clear()
+
 @user.callback_query(lambda c: c.data == "admin_stats")
 async def admin_stats_callback(callback: CallbackQuery):
     if not is_admin(callback.from_user.id):
