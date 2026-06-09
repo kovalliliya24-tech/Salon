@@ -101,8 +101,7 @@ admin_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="⭐ Відгуки",callback_data="admin_reviews")],
     [InlineKeyboardButton(text="📈 Статистика", callback_data="admin_stats")],
     [InlineKeyboardButton(text="➕ Додати запис", callback_data="admin_add")],
-    [InlineKeyboardButton(text="❌ Видалити запис", callback_data="admin_delete")],
-    [InlineKeyboardButton(text="❌ Очистити всі записи", callback_data="admin_delete_all")]
+    [InlineKeyboardButton(text="❌ Видалити запис", callback_data="admin_delete")]
 ])
 
 confirm_delete_all_kb = InlineKeyboardMarkup(
