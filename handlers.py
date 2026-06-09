@@ -12,6 +12,8 @@ from aiogram.filters import Command
 from database import cursor, conn
 from datetime import datetime, timedelta
 from states import AdminAction, Review, AdminBooking
+import os
+
 
 user = Router()
 
@@ -101,7 +103,8 @@ masters_dict = {
     "master_3": " Ваш майстер"
 }
 
-ADMIN_ID = 6484982821
+# ADMIN_ID = 6484982821
+ADMIN_ID = int(os.getenv("ADMIN_ID"))
 def is_admin(user_id: int):
     return user_id == ADMIN_ID
 @user.message(Command("admin"))

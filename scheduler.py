@@ -2,12 +2,13 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from datetime import datetime, timedelta
 from database import cursor, conn
 import keyboards as kb
+import pytz
 
-scheduler = AsyncIOScheduler(timezone="Europe/Kiev")
-
+kyiv = pytz.timezone("Europe/Kiev")
 
 async def send_afternoon_reminders(bot):
-    tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+    now = datetime.now(kyiv)
+    tomorrow = (now + timedelta(days=1)).strftime("%Y-%m-%d")
 
     cursor.execute("""
         SELECT bookings.id, users.tg_id,
@@ -44,7 +45,7 @@ async def send_afternoon_reminders(bot):
 
 
 async def send_hour_before_reminders(bot):
-    now = datetime.now()
+    now = datetime.now(kyiv)
     today = now.strftime("%Y-%m-%d")
     time_from = (now + timedelta(minutes=50)).strftime("%H:%M")
     time_to = (now + timedelta(minutes=75)).strftime("%H:%M")
@@ -84,7 +85,7 @@ async def send_hour_before_reminders(bot):
 
 
 async def send_review_requests(bot):
-    now = datetime.now()
+    now = datetime.now(kyiv)
     today = now.strftime("%Y-%m-%d")
     time_from = (now - timedelta(minutes=150)).strftime("%H:%M")
     time_to = (now - timedelta(minutes=120)).strftime("%H:%M")
