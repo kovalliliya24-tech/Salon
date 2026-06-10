@@ -256,11 +256,19 @@ async def admin_confirm_yes(callback: CallbackQuery, state: FSMContext):
         user_id = user_row[0]
     else:
         cursor.execute(
-            "INSERT INTO users (tg_id, name, phone) VALUES (%s, %s, %s)",
-            (0, data["client_name"], data["client_phone"])
+            "INSERT INTO users (tg_id, name, phone) VALUES (%s, %s, %s) ON CONFLICT (tg_id) DO NOTHING RETURNING id",
+            (None, data["client_name"], data["client_phone"])
         )
         conn.commit()
-        user_id = cursor.fetchone()[0]
+        row = cursor.fetchone()
+        if row:
+            user_id = row[0]
+        else:
+            cursor.execute(
+                "SELECT id FROM users WHERE name=%s AND phone=%s",
+                (data["client_name"], data["client_phone"])
+            )
+            user_id = cursor.fetchone()[0]
 
     cursor.execute("""
         SELECT * FROM bookings 
