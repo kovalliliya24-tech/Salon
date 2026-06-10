@@ -5,6 +5,14 @@ conn = psycopg2.connect(os.getenv("DATABASE_URL"))
 conn.autocommit = False
 cursor = conn.cursor()
 
+def reset_connection():
+    global conn, cursor
+    try:
+        conn.rollback()
+    except:
+        conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+        cursor = conn.cursor()
+
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
