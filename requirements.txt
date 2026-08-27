@@ -2,4 +2,5 @@ aiogram
 apscheduler
 psycopg2-binary
 pytz
+tzdata
 python-dotenv
