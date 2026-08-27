@@ -1,6 +1,6 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from datetime import datetime, timedelta
-from database import cursor, conn
+import database as db
 import keyboards as kb
 import pytz
 
@@ -8,6 +8,7 @@ kyiv = pytz.timezone("Europe/Kiev")
 scheduler = AsyncIOScheduler(timezone="Europe/Kiev")
 
 async def send_afternoon_reminders(bot):
+    cursor = db.get_cursor()
     now = datetime.now(kyiv)
     tomorrow = (now + timedelta(days=1)).strftime("%Y-%m-%d")
 
@@ -40,12 +41,13 @@ async def send_afternoon_reminders(bot):
                 "UPDATE bookings SET reminded_afternoon = 1 WHERE id = %s",
                 (booking_id,)
             )
-            conn.commit()
+            db.conn.commit()
         except Exception as e:
             print(f"❌ Помилка: {e}")
 
 
 async def send_hour_before_reminders(bot):
+    cursor = db.get_cursor()
     now = datetime.now(kyiv)
     today = now.strftime("%Y-%m-%d")
     time_from = (now + timedelta(minutes=50)).strftime("%H:%M")
@@ -80,12 +82,13 @@ async def send_hour_before_reminders(bot):
                 "UPDATE bookings SET reminded_before = 1 WHERE id = %s",
                 (booking_id,)
             )
-            conn.commit()
+            db.conn.commit()
         except Exception as e:
             print(f"❌ Помилка: {e}")
 
 
 async def send_review_requests(bot):
+    cursor = db.get_cursor()
     now = datetime.now(kyiv)
     today = now.strftime("%Y-%m-%d")
     time_from = (now - timedelta(minutes=150)).strftime("%H:%M")
@@ -120,6 +123,6 @@ async def send_review_requests(bot):
                 "UPDATE bookings SET reviewed = 1 WHERE id = %s",
                 (booking_id,)
             )
-            conn.commit()
+            db.conn.commit()
         except Exception as e:
             print(f"❌ Помилка: {e}")

@@ -11,7 +11,19 @@ def reset_connection():
         conn.rollback()
     except:
         conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+        conn.autocommit = False
         cursor = conn.cursor()
+
+def get_cursor():
+    global conn, cursor
+    try:
+        cursor.execute("SELECT 1")
+        cursor.fetchone()
+    except (psycopg2.InterfaceError, psycopg2.OperationalError):
+        conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+        conn.autocommit = False
+        cursor = conn.cursor()
+    return cursor
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS users (
